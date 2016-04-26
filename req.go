@@ -35,12 +35,12 @@ func getHTML(url string) (html string) {
 	}
 	_, body, _ := request.Get(url).
 		Set("Accept", `text/html,application/xhtml+xml,application/xml;q=0.9,`+
-		`image/webp,*/*;q=0.8`).
+			`image/webp,*/*;q=0.8`).
 		Set("Pragma", "no-cache").
 		Set("Referer", "https://laracasts.com/").
 		Set("Connection", "close").
 		Set("User-Agent", `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4)`+
-		`AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.86 Safari/537.36`).
+			`AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.86 Safari/537.36`).
 		End()
 	return body
 }
@@ -54,14 +54,14 @@ func getList(listURL string) {
 		Find("a").
 		Has("span").
 		Each(func(i int, s *goquery.Selection) {
-		tempMap := make(map[string]string)
-		origin := strings.Split(strings.TrimSpace(s.Text()), "\n")[0]
-		tempMap[`name`] = origin
-		tempMap[`key`] = strconv.Itoa(i + 1)
-		origin, _ = s.Attr("href")
-		tempMap[`url`] = normalize(origin, "url")
-		videoList = append(videoList, tempMap)
-	})
+			tempMap := make(map[string]string)
+			origin := strings.Split(strings.TrimSpace(s.Text()), "\n")[0]
+			tempMap[`name`] = origin
+			tempMap[`key`] = strconv.Itoa(i + 1)
+			origin, _ = s.Attr("href")
+			tempMap[`url`] = normalize(origin, "url")
+			videoList = append(videoList, tempMap)
+		})
 	total := len(videoList)
 	log.Printf("Total %d", total)
 	//add 0,i counts the digit of length
@@ -86,7 +86,14 @@ func normalize(s, nType string) string {
 		if len(s) == 0 {
 			return ``
 		}
-		return strings.Replace(strings.Replace(s, `/`, replaceChar, -1), ` `, replaceChar, -1)
+		r := strings.NewReplacer(
+			`/`, replaceChar,
+			`?`, replaceChar,
+			` `, replaceChar,
+			`:`, replaceChar,
+			`|`, replaceChar,
+		)
+		return r.Replace(s)
 	case "url":
 		if !strings.HasPrefix(s, `http`) {
 			return lPrefix + s
@@ -127,10 +134,10 @@ func getVideoURL(doc *goquery.Document) (string, string) {
 	// get right rs
 	doc.Find(`source`).
 		Each(func(i int, s *goquery.Selection) {
-		if re, _ := s.Attr("data-quality"); re == strings.ToUpper(resolution) {
-			v, _ = s.Attr(`src`)
-		}
-	})
+			if re, _ := s.Attr("data-quality"); re == strings.ToUpper(resolution) {
+				v, _ = s.Attr(`src`)
+			}
+		})
 	if v == `` {
 		log.Panic("no video")
 	}
