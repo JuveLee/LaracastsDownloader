@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"log"
+	"math"
 	"net/http"
 	"net/url"
 	"os"
@@ -60,9 +62,19 @@ func getList(listURL string) {
 		tempMap[`url`] = normalize(origin, "url")
 		videoList = append(videoList, tempMap)
 	})
-	log.Printf("Total %d", len(videoList))
+	total := len(videoList)
+	log.Printf("Total %d", total)
+	//add 0,i counts the digit of length
+	var i int
+	for ; ; i++ {
+		if total/int(math.Pow10(i)) == 0 {
+			break
+		}
+	}
+
 	for _, v := range videoList {
-		downloadFromV(v[`url`], v[`key`]+`.`+v[`name`])
+		key, _ := strconv.Atoi(v[`key`])
+		downloadFromV(v[`url`], fmt.Sprintf("%0*d", i, key)+`.`+v[`name`])
 	}
 }
 
