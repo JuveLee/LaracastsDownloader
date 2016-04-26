@@ -175,7 +175,7 @@ func downloadVideo(downloadURL, fileName string) (err error) {
 	if err != nil {
 		return err
 	}
-
+	bar.FinishPrint("The End!")
 	return
 }
 
