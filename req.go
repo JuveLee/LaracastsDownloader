@@ -88,7 +88,10 @@ func normalize(s, nType string) string {
 		}
 		return strings.Replace(strings.Replace(s, `/`, replaceChar, -1), ` `, replaceChar, -1)
 	case "url":
-		return lPrefix + s
+		if strings.HasPrefix(s, `/`) {
+			return lPrefix + s
+		}
+		return s
 	case "v":
 		return vPrefix + s
 	case "path":
