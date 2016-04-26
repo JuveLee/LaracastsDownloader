@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"log"
+	"os"
 )
 
 var (
@@ -27,6 +28,13 @@ func main() {
 	resolution = *re
 	proxy = *flagProxy
 	targetPath = normalize(*flagPath, "path")
+
+	if targetPath != `.` {
+		err := os.MkdirAll(targetPath, 0777)
+		if err != nil {
+			panic(err)
+		}
+	}
 
 	if len(*videoURL) > 0 {
 		log.Print("video")
