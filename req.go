@@ -86,7 +86,7 @@ func normalize(s, nType string) string {
 		if len(s) == 0 {
 			return ``
 		}
-		return strings.Replace(s, ` `, replaceChar, -1)
+		return strings.Replace(strings.Replace(s, `/`, replaceChar, -1), ` `, replaceChar, -1)
 	case "url":
 		return lPrefix + s
 	case "v":
@@ -175,7 +175,7 @@ func downloadVideo(downloadURL, fileName string) (err error) {
 	if err != nil {
 		return err
 	}
-	bar.FinishPrint("The End!")
+	bar.FinishPrint(fileName + "Finished")
 	return
 }
 
